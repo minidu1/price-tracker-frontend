@@ -1,0 +1,24 @@
+.signup {
+    width: 300px;
+    margin: 100px auto;
+}
+
+.signup h2 {
+    text-align: center;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.form-group input {
+    padding: 8px;
+    margin-top: 5px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+}
