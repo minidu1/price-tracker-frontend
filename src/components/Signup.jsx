@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./Signup.css";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function Signup() {
   const [name, setName] = useState("");
@@ -10,38 +11,55 @@ export default function Signup() {
     passwordError: "",
     nameError: "",
   });
+  const [serverError, setServerError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  function handleSubmit(event) {
+  function clearForm() {
+    setName("");
+    setEmail("");
+    setPassword("");
+    setError({ nameError: "", emailError: "", passwordError: "" });
+    setServerError("");
+  }
+  async function handleSubmit(event) {
     event.preventDefault();
+    setIsLoading(true); // stop user from submit twice
 
     const newErrors = { nameError: "", emailError: "", passwordError: "" };
 
     if (name.trim() === "") {
       newErrors.nameError = "* Name is required";
-    }
-    else if (name.trim().length < 3 || name.trim().length > 32) {
-      newErrors.nameError = "* Name must be at least 3 characters";
+    } else if (name.trim().length < 3 || name.trim().length > 32) {
+      newErrors.nameError = "* Name must be between 3 to 32 characters";
     }
 
     if (email.trim() === "") {
       newErrors.emailError = "* Email is required";
-    }
-
-    else if (!/^.+@.+\..+$/.test(email)) {
+    } else if (!/^.+@.+\..+$/.test(email)) {
       newErrors.emailError = "* Invalid email";
     }
 
     if (password.trim() === "") {
       newErrors.passwordError = "* Password cannot be empty";
+    } else if (password.length < 6) {
+      newErrors.passwordError = "* Password must be at least 6 characters";
     }
 
-    else if (password.length < 6) {
-              newErrors.passwordError = "* Password must be at least 6 characters";
+    try {
+      setError(newErrors);
+      if (Object.values(newErrors).some(Boolean)) return;
+      await createAccount(name, email, password);
+      clearForm();
+      alert("Signup complete");
+    } catch (error) {
+      if (error instanceof TypeError) {
+        setServerError("Unable to connect. Please try again later.");
+      } else {
+        setServerError(error.message);
+      }
+    } finally {
+      setIsLoading(false);
     }
-    setError(newErrors);
-    if (Object.values(newErrors).some(Boolean)) return;
-
-    alert("submitted");
   }
 
   return (
@@ -101,9 +119,26 @@ export default function Signup() {
             }}
           />
         </div>
-
-        <button type="submit">Sign up</button>
+        {/* button disable if while fetch happen */}
+        <div className="error">{serverError}</div>
+        <button type="submit" disabled={isLoading}>
+          {isLoading ? "Signing up..." : "Sign Up"}
+        </button>
       </form>
     </div>
   );
+}
+
+async function createAccount(name, email, password) {
+  const res = await fetch(`${API_URL}/users`, {
+    method: "post",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, email, password }),
+  });
+  const data = await res.json();
+  if (res.ok) {
+    console.log(res.status, data);
+  } else {
+    throw new Error(data.message);
+  }
 }
