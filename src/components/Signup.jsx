@@ -23,7 +23,7 @@ export default function Signup() {
   }
   async function handleSubmit(event) {
     event.preventDefault();
-    setIsLoading(true); // stop user from submit twice
+    setServerError("")
 
     const newErrors = { nameError: "", emailError: "", passwordError: "" };
 
@@ -46,16 +46,18 @@ export default function Signup() {
     }
 
     try {
+    setIsLoading(true); // show loading state
+
       setError(newErrors);
       if (Object.values(newErrors).some(Boolean)) return;
       await createAccount(name, email, password);
       clearForm();
       alert("Signup complete");
-    } catch (error) {
-      if (error instanceof TypeError) {
+    } catch (err) {
+      if (err instanceof TypeError) {
         setServerError("Unable to connect. Please try again later.");
       } else {
-        setServerError(error.message);
+        setServerError(err.message);
       }
     } finally {
       setIsLoading(false);
@@ -122,7 +124,7 @@ export default function Signup() {
         {/* button disable if while fetch happen */}
         <div className="error">{serverError}</div>
         <button type="submit" disabled={isLoading}>
-          {isLoading ? "Signing up..." : "Sign Up"}
+          {isLoading ? "Login..." : "Login"}
         </button>
       </form>
     </div>
