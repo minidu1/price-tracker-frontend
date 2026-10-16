@@ -1,7 +1,7 @@
 import { useState } from "react";
 const API_URL = import.meta.env.VITE_API_URL;
 
-export default function Login() {
+export default function Login({onLogin}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState({
@@ -36,9 +36,8 @@ export default function Login() {
     try {
       setError(newErrors);
       if (Object.values(newErrors).some(Boolean)) return;
-      await loginUser(email, password);
-      clearForm();
-      alert("Logged in");
+      const user = await loginUser(email, password);
+      onLogin(user) // store user obj in parent componont(App.js) so any child can access user data to render
     } catch (error) {
       if (error instanceof TypeError) {
         setServerError("Unable to connect. Please try again later.");
@@ -109,7 +108,7 @@ async function loginUser(email, password) {
   });
   const data = await res.json();
   if (res.ok) {
-    console.log(res.status, data);
+    return data.user
   } else {
     throw new Error(data.message);
   }
