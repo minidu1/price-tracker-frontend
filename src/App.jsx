@@ -1,4 +1,7 @@
+import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./components/Login";
+import Signup from "./components/Signup";
+import Dashboard from "./components/Dashboard";
 import { useEffect, useState } from "react";
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -35,7 +38,7 @@ export default function App() {
         } else {
           if (res.status === 401) {
             setUser(null);
-            return
+            return;
           }
           throw new Error(data.message);
         }
@@ -52,17 +55,33 @@ export default function App() {
     return <p>Loading ....</p>;
   }
 
-  //if no user found login screen shows
-  if (user === null) {
-    return <Login onLogin={setUser} />;
-  }
-
-  //if user found render
   return (
     <>
       <h1>Price Tracker</h1>
-      <h2>Hi {user.name}</h2>
-      <button onClick={logout}>Logout</button>
+
+      <Routes>
+        <Route
+          path="/login"
+          element={
+            user ? <Navigate to="/" replace /> : <Login onLogin={setUser} />
+          }
+        />
+        <Route
+          path="/signup"
+          element={user ? <Navigate to="/" replace /> : <Signup />}
+        />
+        <Route
+          path="/"
+          element={
+            user ? (
+              <Dashboard user={user} onLogout={logout} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </>
   );
 }

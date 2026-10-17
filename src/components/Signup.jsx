@@ -1,8 +1,11 @@
 import { useState } from "react";
 import "./Signup.css";
+import { useNavigate } from "react-router-dom";
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function Signup() {
+  const navigate = useNavigate;
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -52,7 +55,7 @@ export default function Signup() {
       if (Object.values(newErrors).some(Boolean)) return;
       await createAccount(name, email, password);
       clearForm();
-      alert("Signup complete");
+      navigate("/login")
     } catch (err) {
       if (err instanceof TypeError) {
         setServerError("Unable to connect. Please try again later.");
