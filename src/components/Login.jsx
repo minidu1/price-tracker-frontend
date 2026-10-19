@@ -1,5 +1,4 @@
 import { useState } from "react";
-import "./Signup.css";
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function Login({onLogin}) {
@@ -93,7 +92,7 @@ export default function Login({onLogin}) {
         {/* button disable if while fetch happen */}
         <div className="error">{serverError}</div>
         <button type="submit" disabled={isLoading}>
-          {isLoading ? "Signing up..." : "Sign Up"}
+          {isLoading ? "Login..." : "Login"}
         </button>
       </form>
     </div>

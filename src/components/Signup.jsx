@@ -1,5 +1,4 @@
 import { useState } from "react";
-import "./Signup.css";
 import { useNavigate } from "react-router-dom";
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -127,7 +126,7 @@ export default function Signup() {
         {/* button disable if while fetch happen */}
         <div className="error">{serverError}</div>
         <button type="submit" disabled={isLoading}>
-          {isLoading ? "Login..." : "Login"}
+          {isLoading ? "Signup..." : "Signup"}
         </button>
       </form>
     </div>

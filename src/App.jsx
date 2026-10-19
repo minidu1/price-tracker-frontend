@@ -57,31 +57,33 @@ export default function App() {
 
   return (
     <>
-      <h1>Price Tracker</h1>
+      <div className="container">
+        <h1>Price Tracker</h1>
 
-      <Routes>
-        <Route
-          path="/login"
-          element={
-            user ? <Navigate to="/" replace /> : <Login onLogin={setUser} />
-          }
-        />
-        <Route
-          path="/signup"
-          element={user ? <Navigate to="/" replace /> : <Signup />}
-        />
-        <Route
-          path="/"
-          element={
-            user ? (
-              <Dashboard user={user} onLogout={logout} />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+        <Routes>
+          <Route
+            path="/login"
+            element={
+              user ? <Navigate to="/" replace /> : <Login onLogin={setUser} />
+            }
+          />
+          <Route
+            path="/signup"
+            element={user ? <Navigate to="/" replace /> : <Signup />}
+          />
+          <Route
+            path="/"
+            element={
+              user ? (
+                <Dashboard user={user} onLogout={logout} />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </div>
     </>
   );
 }
