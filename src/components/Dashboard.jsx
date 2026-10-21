@@ -1,11 +1,23 @@
 import { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
 const API_URL = import.meta.env.VITE_API_URL;
+import AddProductForm from "./AddProductForm";
 
 export default function Dashboard({ onLogout, user }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [showForm, setShowForm] = useState(false);
+
+  function handleAdded() {
+    setRefreshKey((k) => k + 1);
+    setShowForm(false);
+  }
+
+  function handleClose() {
+    setShowForm(false);
+  }
 
   useEffect(() => {
     async function load() {
@@ -19,7 +31,7 @@ export default function Dashboard({ onLogout, user }) {
       }
     }
     load();
-  }, []);
+  }, [refreshKey]);
 
   let content;
 
@@ -48,12 +60,16 @@ export default function Dashboard({ onLogout, user }) {
   return (
     <>
       {/* Always visible */}
-      <p>this is dashboard</p>
+      <p>Dashboard</p>
       <p>hello {user.name}</p>
       <button onClick={onLogout}>Logout</button>
+      <button onClick={() => setShowForm(true)}>Add new Product</button>
 
-      {/* Changes depending on the state */}
-      {content}
+      {showForm ? (
+        <AddProductForm onAdded={handleAdded} onCancel={handleClose} />
+      ) : (
+        content
+      )}
     </>
   );
 }

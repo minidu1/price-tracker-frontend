@@ -51,7 +51,8 @@ export default function Signup() {
     setIsLoading(true); // show loading state
 
       setError(newErrors);
-      if (Object.values(newErrors).some(Boolean)) return;
+      if (Object.values(newErrors).some(Boolean)) return; //if there is an error in newError values, return
+
       await createAccount(name, email, password);
       clearForm();
       navigate("/login")
@@ -67,7 +68,7 @@ export default function Signup() {
   }
 
   return (
-    <div className="signup">
+    <div className="form">
       <h2>Sign up</h2>
 
       <form onSubmit={handleSubmit} noValidate>
@@ -101,8 +102,7 @@ export default function Signup() {
             type="email"
             value={email}
             onChange={(e) => {
-              const input = e.target;
-              setEmail(input.value);
+              setEmail(e.target.value);
             }}
           />
         </div>

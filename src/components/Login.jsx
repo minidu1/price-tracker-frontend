@@ -50,7 +50,7 @@ export default function Login({onLogin}) {
   }
 
   return (
-    <div className="signup">
+    <div className="form">
       <h2>Login</h2>
 
       <form onSubmit={handleSubmit} noValidate>

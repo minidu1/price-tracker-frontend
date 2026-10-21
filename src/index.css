@@ -63,7 +63,7 @@ input {
 input:focus { outline: 2px solid var(--primary); outline-offset: 1px; }
 
 /* login / signup card */
-.signup {
+.form {
   max-width: 400px;
   width: 100%;
   margin: 3rem auto;
@@ -74,7 +74,7 @@ input:focus { outline: 2px solid var(--primary); outline-offset: 1px; }
 }
 .form-group { margin-bottom: 1rem; }
 .form-group label { display: block; margin-bottom: 0.25rem; }
-.signup button { width: 100%; }   /* scoped, so it only hits form buttons */
+.form button { width: 100%; }   /* scoped, so it only hits form buttons */
 .error { color: var(--danger); font-size: 0.875rem; }
 
 /* dashboard grid: as many 250px+ columns as fit, no media query */
