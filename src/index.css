@@ -46,8 +46,13 @@ button {
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
+  margin: 3px;
+}
+.delete-button{
+  background: var(--danger);
 }
 button:hover { background: var(--primary-hover); }
+.delete-button:hover{background: #e33d3d;}
 button:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* inputs */

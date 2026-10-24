@@ -19,6 +19,10 @@ export default function Dashboard({ onLogout, user }) {
     setShowForm(false);
   }
 
+  function handleDelete() {
+    setRefreshKey((k)=> k+1)
+  }
+
   useEffect(() => {
     async function load() {
       try {
@@ -46,7 +50,9 @@ export default function Dashboard({ onLogout, user }) {
       <div className="product-grid">
         {products.map((item) => (
           <ProductCard
+            onDelete={handleDelete}
             key={item.id}
+            id={item.id}
             picture={item.product.picture}
             name={item.product.name}
             target={item.target}
