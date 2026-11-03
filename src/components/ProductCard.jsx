@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function ProductCard({
@@ -32,8 +34,13 @@ export default function ProductCard({
 
   return (
     <div className="product-card">
-      <div className="product-picture">{<img src={picture} alt={name} />}</div>
-      <div className="product-name">{name}</div>
+      {/* make a link to productdetails component by calling url with id   */}
+      <Link to={`/products/${id}`}>
+        <div className="product-picture">
+          {<img src={picture} alt={name} />}
+        </div>
+        <div className="product-name">{name}</div>
+      </Link>
       <div className="product-price">
         Current: Rs.{" "}
         {numericPrice == null
@@ -43,7 +50,9 @@ export default function ProductCard({
       <div className="target-price">
         Target: Rs. {numericTarget?.toLocaleString()}
       </div>
-      <button class= "delete-button" onClick={deleteProduct}>Delete Product</button>
+      <button className="delete-button" onClick={deleteProduct}>
+        Delete Product
+      </button>
       {targetReached && <div className="target-reach">{targetReached} </div>}
     </div>
   );

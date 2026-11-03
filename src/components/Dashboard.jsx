@@ -85,7 +85,7 @@ async function fetchTrackedProducts() {
     method: "GET",
     credentials: "include",
   });
-  const data = await res.json();
+  const data = await res.json(); //make javascript obj 
   if (!res.ok) throw new Error(data.message);
 
   return data;

@@ -3,6 +3,7 @@ import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Dashboard from "./components/Dashboard";
 import { useEffect, useState } from "react";
+import ProductDetails from "./components/ProductDetails";
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function App() {
@@ -64,6 +65,7 @@ export default function App() {
           <Route
             path="/login"
             element={
+              // if user exist(have user cookie) navigate to dashboard, else navigate to login page
               user ? <Navigate to="/" replace /> : <Login onLogin={setUser} />
             }
           />
@@ -80,6 +82,17 @@ export default function App() {
                 <Navigate to="/login" replace />
               )
             }
+          />
+          <Route
+          // when a product click, route to product details component
+          path="/products/:id" 
+          element={
+            user ? (
+              <ProductDetails/>
+            ) :(
+              <Navigate to="/login" replace /> 
+            )
+          }
           />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
