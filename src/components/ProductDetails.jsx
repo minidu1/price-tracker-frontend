@@ -29,9 +29,10 @@ export default function ProductDetails() {
 
     async function load() {
       try {
-        setLoading(true)
+        setLoading(true);
         const data = await getTrackedProductDetails();
         if (data) {
+          console.log(data);
           setTrackedProduct(data);
         }
       } catch (err) {
@@ -48,12 +49,67 @@ export default function ProductDetails() {
     load();
   }, [id]);
 
-  //have to write the ui
   if (loading) {
     return <p>Loading...</p>;
   } else if (error) {
-    return <p>{error}</p>;
+    return (
+      <>
+        <p>{error}</p>
+        <button Link to="/">
+          Dashboard
+        </button>
+      </>
+    );
   } else if (trackedProduct) {
-    return <p>{trackedProduct.target}</p>; //have to wrrite the ui
+    return (
+      <div className="product-details">
+        <div className="product-details__image">
+          <img
+            src={trackedProduct.product.picture}
+            alt={trackedProduct.product.name}
+          />
+        </div>
+
+        <div className="product-details__content">
+          <div className="product-details__header">
+            <h2>{trackedProduct.product.name}</h2>
+
+            {/* here i have to write the logic to say target reached */}
+            {trackedProduct.targetReached && (
+              <span className="status-badge success">Target reached</span>
+            )}
+          </div>
+
+          <div className="product-details__price-row">
+            <span className="currency">RS.</span>
+            <span className="price">
+              {trackedProduct.product.priceHistory?.at(-1)?.price ?? "N/A"}
+            </span>
+          </div>
+
+          <div className="product-details__meta">
+            <span>Target: Rs. {trackedProduct.target}</span>
+            {/* here i have to write logic for extact last price date */}
+            <span>Last updated: Today</span>
+          </div>
+
+          <div className="product-details__actions">
+            <a
+              href={trackedProduct.product.link}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <button className="visit-site-btn">Visit site</button>
+            </a>
+          </div>
+        </div>
+
+        <div className="product-details__history">Price history comes here</div>
+
+        <div className="product-details__description">
+          {trackedProduct.product.description}
+        </div>
+      </div>
+    );
   }
 }
