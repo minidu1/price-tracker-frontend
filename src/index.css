@@ -207,6 +207,15 @@ input:focus {
   display: block;
 }
 
+@media (max-width: 600px) {
+  .product-details {
+    grid-template-columns: 1fr;
+  }
+  .product-details__image img {
+    height: 240px;
+  }
+}
+
 .product-details__content {
   display: flex;
   flex-direction: column;
@@ -282,6 +291,9 @@ input:focus {
   min-width: 180px;
 }
 
+.product-details__history{
+  height: 350px;
+}
 .product-details__history,
 .product-details__description {
   grid-column: 1 / -1;

@@ -1,6 +1,17 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 const API_URL = import.meta.env.VITE_API_URL;
+import { parsePrice } from "../utils/price";
+import { formatDate } from "../utils/date";
+import {
+  Line,
+  LineChart,
+  ReferenceLine,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -8,6 +19,8 @@ export default function ProductDetails() {
   const [trackedProduct, setTrackedProduct] = useState();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  //add price vars for save prices extract from db
 
   useEffect(() => {
     async function getTrackedProductDetails() {
@@ -61,6 +74,20 @@ export default function ProductDetails() {
       </>
     );
   } else if (trackedProduct) {
+    const price = parsePrice(
+      trackedProduct.product.priceHistory?.at(-1)?.price,
+    );
+    const target = parsePrice(trackedProduct.target);
+    const lastUpdate = formatDate(
+      trackedProduct.product.priceHistory?.at(-1)?.date,
+    );
+    const targetReached = price != null && price <= target;
+
+    const chartData = trackedProduct.product.priceHistory.map((p) => ({
+      date: formatDate(p.date),
+      price: parsePrice(p.price),
+    }));
+
     return (
       <div className="product-details">
         <div className="product-details__image">
@@ -74,23 +101,21 @@ export default function ProductDetails() {
           <div className="product-details__header">
             <h2>{trackedProduct.product.name}</h2>
 
-            {/* here i have to write the logic to say target reached */}
-            {trackedProduct.targetReached && (
+            {/* logic to add target reached */}
+            {targetReached && (
               <span className="status-badge success">Target reached</span>
             )}
           </div>
 
           <div className="product-details__price-row">
             <span className="currency">RS.</span>
-            <span className="price">
-              {trackedProduct.product.priceHistory?.at(-1)?.price ?? "N/A"}
-            </span>
+            <span className="price">{price?.toLocaleString() ?? "N/A"}</span>
           </div>
 
           <div className="product-details__meta">
-            <span>Target: Rs. {trackedProduct.target}</span>
-            {/* here i have to write logic for extact last price date */}
-            <span>Last updated: Today</span>
+            <span>Target: Rs. {target.toLocaleString()}</span>
+            {/* show last price updated day */}
+            <span>Last updated: {lastUpdate}</span>
           </div>
 
           <div className="product-details__actions">
@@ -104,10 +129,31 @@ export default function ProductDetails() {
           </div>
         </div>
 
-        <div className="product-details__history">Price history comes here</div>
+        <div className="product-details__history">
+          {/* width={500} height={400} */}
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={chartData}>
+              {/* let y axis to zoom on price instead of chart start at 0 */}
+              <YAxis domain={["auto", "auto"]} />
+              <XAxis dataKey="date" />
+              <Tooltip />
+              <Line type="monotone" dataKey="price" />
+              <ReferenceLine
+                y={target}
+                stroke="red"
+                strokeDasharray="4 4"
+                label="Target"
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
 
         <div className="product-details__description">
-          {trackedProduct.product.description}
+          <ul>
+            {trackedProduct.product.description.map((item, index) => (
+              <li key={index}>{item}</li>
+            ))}
+          </ul>
         </div>
       </div>
     );

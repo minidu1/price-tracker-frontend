@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { parsePrice } from "../utils/price";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -10,8 +11,8 @@ export default function ProductCard({
   id,
   onDelete,
 }) {
-  const numericPrice = price == null ? null : Number(price);
-  const numericTarget = target == null ? null : Number(target);
+  const numericPrice = parsePrice(price)
+  const numericTarget = parsePrice(target)
 
   const targetReached = numericPrice !== null && numericPrice <= numericTarget;
 
