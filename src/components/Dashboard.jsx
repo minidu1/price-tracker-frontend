@@ -40,7 +40,7 @@ export default function Dashboard({ onLogout, user }) {
   let content;
 
   if (loading) {
-    content = <p>Loading products...</p>;
+    content = <div className="loading-state">Loading products...</div>;
   } else if (error) {
     content = <p>Something went wrong</p>;
   } else if (products.length === 0) {
@@ -64,18 +64,24 @@ export default function Dashboard({ onLogout, user }) {
   }
 
   return (
-    <>
-      <p>Dashboard</p>
-      <p>hello {user.name}</p>
-      <button onClick={onLogout}>Logout</button>
-      <button onClick={() => setShowForm(true)}>Add new Product</button>
+    <div className="dashboard-shell">
+      <div className="dashboard-toolbar glass-panel">
+        <div>
+          <p className="eyebrow">Overview</p>
+          <h2>My tracked products</h2>
+        </div>
+
+        <button className="primary-button" onClick={() => setShowForm(true)}>
+          Add product
+        </button>
+      </div>
 
       {showForm ? (
         <AddProductForm onAdded={handleAdded} onCancel={handleClose} />
       ) : (
         content
       )}
-    </>
+    </div>
   );
 }
 

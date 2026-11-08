@@ -7,7 +7,7 @@ import ProductDetails from "./components/ProductDetails";
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function App() {
-  const [user, setUser] = useState(); //undefined means still checking the user
+  const [user, setUser] = useState();
 
   async function logout() {
     try {
@@ -50,21 +50,30 @@ export default function App() {
     checkAuth();
   }, []);
 
-  //if user undefined it means fetch is still happening. so loading screen shows
   if (user === undefined) {
-    return <p>Loading ....</p>;
+    return <div className="loading-state">Loading...</div>;
   }
 
   return (
-    <>
+    <div className="app-shell">
       <div className="container">
-        <h1>Price Tracker</h1>
+        <header className="app-header glass-panel">
+          <h1>Price Tracker</h1>
+
+          {user && (
+            <div className="header-actions">
+              <span className="user-pill">{user.name}</span>
+              <button className="secondary-button" onClick={logout}>
+                Logout
+              </button>
+            </div>
+          )}
+        </header>
 
         <Routes>
           <Route
             path="/login"
             element={
-              // if user exist(have user cookie) navigate to dashboard
               user ? <Navigate to="/" replace /> : <Login onLogin={setUser} />
             }
           />
@@ -83,18 +92,14 @@ export default function App() {
             }
           />
           <Route
-          path="/products/:id" 
-          element={
-            user ? (
-              <ProductDetails/>
-            ) :(
-              <Navigate to="/login" replace /> 
-            )
-          }
+            path="/products/:id"
+            element={
+              user ? <ProductDetails /> : <Navigate to="/login" replace />
+            }
           />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
-    </>
+    </div>
   );
 }

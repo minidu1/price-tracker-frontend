@@ -52,7 +52,7 @@ export default function ProductCard({
       <button className="delete-button" onClick={deleteProduct}>
         Delete Product
       </button>
-      {targetReached && <div className="target-reach">{targetReached} </div>}
+      {targetReached && <div className="target-reach">Target reached</div>}
     </div>
   );
 }

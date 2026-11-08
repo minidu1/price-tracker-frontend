@@ -58,14 +58,16 @@ export default function ProductDetails() {
   }, [id]);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <div className="loading-state">Loading...</div>;
   }
   if (error) {
     return (
-      <>
+      <div className="centered-message">
         <p>{error}</p>
-        <Link to="/">Go to dashboard</Link>
-      </>
+        <Link to="/" className="text-link-button">
+          Go to dashboard
+        </Link>
+      </div>
     );
   }
   if (!trackedProduct) return null;
@@ -82,7 +84,16 @@ export default function ProductDetails() {
     const chartData = trackedProduct.product.priceHistory.map((p) => ({
       date: formatDate(p.date),
       price: parsePrice(p.price),
+      target: target,
     }));
+
+    const priceValues = chartData
+      .map((point) => point.price)
+      .filter((value) => value != null);
+    const yMin = Math.min(...priceValues, target ?? Infinity);
+    const yMax = Math.max(...priceValues, target ?? -Infinity);
+    const paddedMin = yMin === 0 ? 0 : yMin * 0.9;
+    const paddedMax = yMax === 0 ? 1 : yMax * 1.1;
 
     return (
       <div className="product-details">
@@ -129,18 +140,43 @@ export default function ProductDetails() {
         <div className="product-details__history">
           {hasHistory ? (
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData}>
-                {/* let y axis to zoom on price instead of chart start at 0 */}
-                <YAxis domain={["auto", "auto"]} />
-                <XAxis dataKey="date" />
-                <Tooltip />
-                <Line type="monotone" dataKey="price" dot={true} />
-                <ReferenceLine
-                  y={target}
-                  stroke="red"
-                  strokeDasharray="4 4"
-                  label="Target"
+              <LineChart
+                data={chartData}
+                margin={{ top: 16, right: 20, left: 0, bottom: 8 }}
+              >
+                <YAxis
+                  domain={[paddedMin, paddedMax]}
+                  tickFormatter={(value) =>
+                    `Rs ${Number(value).toLocaleString()}`
+                  }
                 />
+                <XAxis dataKey="date" tickLine={false} axisLine={false} />
+                <Tooltip
+                  formatter={(value) => [
+                    `Rs ${Number(value).toLocaleString()}`,
+                    "Price",
+                  ]}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="price"
+                  stroke="#7fd8ff"
+                  strokeWidth={3}
+                  dot={{ r: 3, fill: "#7fd8ff" }}
+                  activeDot={{ r: 5 }}
+                  name="Price"
+                />
+                {target != null && (
+                  <Line
+                    type="monotone"
+                    dataKey="target"
+                    stroke="#ff9d9d"
+                    strokeWidth={2}
+                    strokeDasharray="6 6"
+                    dot={false}
+                    name="Target"
+                  />
+                )}
               </LineChart>
             </ResponsiveContainer>
           ) : (
