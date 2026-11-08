@@ -32,6 +32,11 @@ body {
   line-height: 1.5;
 }
 
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
 h1 {
   font-size: 1.75rem;
   margin: 0 0 1rem;
@@ -285,10 +290,22 @@ input:focus {
 }
 
 .visit-site-btn {
+  background: var(--primary);
+  color: #0b1020;
+  border: 0;
+  border-radius: var(--radius);
+  font-weight: 700;
+  cursor: pointer;
+  margin: 3px;
+
   padding: 0.8rem 1.2rem;
   border-radius: 12px;
   font-size: 1rem;
   min-width: 180px;
+}
+
+.visit-site-btn:hover {
+  background: var(--primary-hover);
 }
 
 .product-details__history{

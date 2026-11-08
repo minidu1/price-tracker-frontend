@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 const API_URL = import.meta.env.VITE_API_URL;
 import { parsePrice } from "../utils/price";
 import { formatDate } from "../utils/date";
@@ -43,11 +43,9 @@ export default function ProductDetails() {
     async function load() {
       try {
         setLoading(true);
+        setError("");
         const data = await getTrackedProductDetails();
-        if (data) {
-          console.log(data);
-          setTrackedProduct(data);
-        }
+        setTrackedProduct(data);
       } catch (err) {
         console.log(err);
         if (err.status === 404) {
@@ -64,23 +62,24 @@ export default function ProductDetails() {
 
   if (loading) {
     return <p>Loading...</p>;
-  } else if (error) {
+  }
+  if (error) {
     return (
       <>
         <p>{error}</p>
-        <button Link to="/">
-          Dashboard
-        </button>
+        <Link to="/">Go to dashboard</Link>
       </>
     );
-  } else if (trackedProduct) {
-    const price = parsePrice(
-      trackedProduct.product.priceHistory?.at(-1)?.price,
-    );
+  }
+  if (!trackedProduct) return null;
+  else {
+    const history = trackedProduct.product.priceHistory ?? [];
+    const hasHistory = history.length > 0;
+    const latest = history.at(-1);
+
+    const price = parsePrice(latest?.price);
     const target = parsePrice(trackedProduct.target);
-    const lastUpdate = formatDate(
-      trackedProduct.product.priceHistory?.at(-1)?.date,
-    );
+    const lastUpdate = formatDate(latest?.date);
     const targetReached = price != null && price <= target;
 
     const chartData = trackedProduct.product.priceHistory.map((p) => ({
@@ -109,13 +108,15 @@ export default function ProductDetails() {
 
           <div className="product-details__price-row">
             <span className="currency">RS.</span>
-            <span className="price">{price?.toLocaleString() ?? "N/A"}</span>
+            <span className="price">
+              {price?.toLocaleString() ?? "No price yet"}
+            </span>
           </div>
 
           <div className="product-details__meta">
-            <span>Target: Rs. {target.toLocaleString()}</span>
+            <span>Target: Rs. {target?.toLocaleString()}</span>
             {/* show last price updated day */}
-            <span>Last updated: {lastUpdate}</span>
+            {hasHistory && <span>Last updated: {lastUpdate}</span>}
           </div>
 
           <div className="product-details__actions">
@@ -123,36 +124,45 @@ export default function ProductDetails() {
               href={trackedProduct.product.link}
               target="_blank"
               rel="noreferrer"
+              className="visit-site-btn"
             >
-              <button className="visit-site-btn">Visit site</button>
+              Visit site
+              {/* <button className="visit-site-btn">Visit site</button> */}
             </a>
           </div>
         </div>
 
         <div className="product-details__history">
-          {/* width={500} height={400} */}
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={chartData}>
-              {/* let y axis to zoom on price instead of chart start at 0 */}
-              <YAxis domain={["auto", "auto"]} />
-              <XAxis dataKey="date" />
-              <Tooltip />
-              <Line type="monotone" dataKey="price" />
-              <ReferenceLine
-                y={target}
-                stroke="red"
-                strokeDasharray="4 4"
-                label="Target"
-              />
-            </LineChart>
-          </ResponsiveContainer>
+          {hasHistory ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={chartData}>
+                {/* let y axis to zoom on price instead of chart start at 0 */}
+                <YAxis domain={["auto", "auto"]} />
+                <XAxis dataKey="date" />
+                <Tooltip />
+                <Line type="monotone" dataKey="price" dot={true} />
+                <ReferenceLine
+                  y={target}
+                  stroke="red"
+                  strokeDasharray="4 4"
+                  label="Target"
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <p>No price data yet. Daily check will add one</p>
+          )}
         </div>
 
         <div className="product-details__description">
           <ul>
-            {trackedProduct.product.description.map((item, index) => (
-              <li key={index}>{item}</li>
-            ))}
+            {trackedProduct.product.description?.length ? (
+              trackedProduct.product.description.map((item, index) => (
+                <li key={index}>{item}</li>
+              ))
+            ) : (
+              <li>No description available</li>
+            )}
           </ul>
         </div>
       </div>
