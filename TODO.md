@@ -1,2 +1,2 @@
-- [ ] Signup.css is doing nothing. Style it for forms
-- [ ] clearForm() in loging do nothing. Delete if not wanted
+- [x] Signup.css is doing nothing. Style it for forms
+- [x] clearForm() in loging do nothing. Delete if not wanted

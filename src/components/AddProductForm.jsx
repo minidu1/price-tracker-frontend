@@ -10,7 +10,7 @@ export default function AddProductForm({ onAdded, onCancel }) {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    setServerError("")
+    setServerError("");
 
     const newErrors = { urlError: "", targetPriceError: "" };
 
@@ -34,31 +34,30 @@ export default function AddProductForm({ onAdded, onCancel }) {
 
     setError(newErrors);
 
-    //if there is an error in newError values, return
     if (Object.values(newErrors).some(Boolean)) return;
 
     try {
-      setLoading(true)
+      setLoading(true);
       const res = await fetch(`${API_URL}/products`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({link: productUrl,target:Number(targetPrice) }),
+        body: JSON.stringify({ link: productUrl, target: Number(targetPrice) }),
         credentials: "include",
       });
-      const data = await res.json()
+      const data = await res.json();
 
       if (!res.ok) {
         throw new Error(data.message);
       }
-      onAdded()
+      onAdded();
     } catch (err) {
-       if (err instanceof TypeError) {
+      if (err instanceof TypeError) {
         setServerError("Unable to connect. Please try again later.");
       } else {
         setServerError(err.message);
       }
-    } finally{
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -67,7 +66,6 @@ export default function AddProductForm({ onAdded, onCancel }) {
       <h2>Add a Product</h2>
 
       <form onSubmit={handleSubmit} noValidate>
-
         <div className="form-group">
           <div>
             <label htmlFor="product-url">Product Url</label>
@@ -106,7 +104,9 @@ export default function AddProductForm({ onAdded, onCancel }) {
         <button type="submit" disabled={loading}>
           {loading ? "Adding product..." : "Add product"}
         </button>
-        <button type="button" disabled= {loading} onClick={onCancel}>Cancel</button>
+        <button type="button" disabled={loading} onClick={onCancel}>
+          Cancel
+        </button>
       </form>
     </div>
   );

@@ -20,8 +20,6 @@ export default function ProductDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  //add price vars for save prices extract from db
-
   useEffect(() => {
     async function getTrackedProductDetails() {
       const res = await fetch(`${API_URL}/products/tracked-products/${id}`, {
@@ -32,8 +30,8 @@ export default function ProductDetails() {
       const data = await res.json();
 
       if (!res.ok) {
-        const err = new Error(data.message); //make an error obj
-        err.status = res.status; //add the status code to catch any 404s
+        const err = new Error(data.message);
+        err.status = res.status; //add the status code to catch any 404s in outer
         throw err;
       }
 
@@ -47,7 +45,6 @@ export default function ProductDetails() {
         const data = await getTrackedProductDetails();
         setTrackedProduct(data);
       } catch (err) {
-        console.log(err);
         if (err.status === 404) {
           setError("Product not found");
         } else {
@@ -100,7 +97,6 @@ export default function ProductDetails() {
           <div className="product-details__header">
             <h2>{trackedProduct.product.name}</h2>
 
-            {/* logic to add target reached */}
             {targetReached && (
               <span className="status-badge success">Target reached</span>
             )}
@@ -115,7 +111,6 @@ export default function ProductDetails() {
 
           <div className="product-details__meta">
             <span>Target: Rs. {target?.toLocaleString()}</span>
-            {/* show last price updated day */}
             {hasHistory && <span>Last updated: {lastUpdate}</span>}
           </div>
 
@@ -127,7 +122,6 @@ export default function ProductDetails() {
               className="visit-site-btn"
             >
               Visit site
-              {/* <button className="visit-site-btn">Visit site</button> */}
             </a>
           </div>
         </div>

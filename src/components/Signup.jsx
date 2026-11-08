@@ -51,7 +51,7 @@ export default function Signup() {
     setIsLoading(true); // show loading state
 
       setError(newErrors);
-      if (Object.values(newErrors).some(Boolean)) return; //if there is an error in newError values, return
+      if (Object.values(newErrors).some(Boolean)) return;
 
       await createAccount(name, email, password);
       clearForm();
@@ -82,8 +82,7 @@ export default function Signup() {
           <input
             id="name"
             type="text"
-            value={name} //show the name on textbox
-            //show the result when user type the name
+            value={name}
             onChange={(e) => {
               setName(e.target.value);
             }}
@@ -123,7 +122,6 @@ export default function Signup() {
             }}
           />
         </div>
-        {/* button disable if while fetch happen */}
         <div className="error">{serverError}</div>
         <button type="submit" disabled={isLoading}>
           {isLoading ? "Signup..." : "Signup"}
@@ -141,7 +139,7 @@ async function createAccount(name, email, password) {
   });
   const data = await res.json();
   if (res.ok) {
-    console.log(res.status, data);
+    console.error(res.status, data);
   } else {
     throw new Error(data.message);
   }

@@ -43,15 +43,14 @@ export default function App() {
           }
           throw new Error(data.message);
         }
-      } catch (err) {
-        console.log(err.message);
+      } catch {
         setUser(null);
       }
     }
     checkAuth();
   }, []);
 
-  //if user undefined it means fetch is still happeninhg. so loadinhg screen shows
+  //if user undefined it means fetch is still happening. so loading screen shows
   if (user === undefined) {
     return <p>Loading ....</p>;
   }
@@ -65,7 +64,7 @@ export default function App() {
           <Route
             path="/login"
             element={
-              // if user exist(have user cookie) navigate to dashboard, else navigate to login page
+              // if user exist(have user cookie) navigate to dashboard
               user ? <Navigate to="/" replace /> : <Login onLogin={setUser} />
             }
           />
@@ -84,7 +83,6 @@ export default function App() {
             }
           />
           <Route
-          // when a product click, route to product details component
           path="/products/:id" 
           element={
             user ? (

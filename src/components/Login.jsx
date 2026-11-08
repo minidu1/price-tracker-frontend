@@ -1,7 +1,7 @@
 import { useState } from "react";
 const API_URL = import.meta.env.VITE_API_URL;
 
-export default function Login({onLogin}) {
+export default function Login({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState({
@@ -11,15 +11,9 @@ export default function Login({onLogin}) {
   const [serverError, setServerError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  function clearForm() {
-    setEmail("");
-    setPassword("");
-    setError({ emailError: "", passwordError: "" });
-    setServerError("");
-  }
   async function handleSubmit(event) {
     event.preventDefault();
-    setIsLoading(true); // stop user from submit twice
+    setIsLoading(true);
 
     const newErrors = { emailError: "", passwordError: "" };
 
@@ -37,7 +31,7 @@ export default function Login({onLogin}) {
       setError(newErrors);
       if (Object.values(newErrors).some(Boolean)) return;
       const user = await loginUser(email, password);
-      onLogin(user) // store user obj in parent componont(App.js) so any child can access user data to render
+      onLogin(user); // send user obj to parent component
     } catch (error) {
       if (error instanceof TypeError) {
         setServerError("Unable to connect. Please try again later.");
@@ -54,7 +48,6 @@ export default function Login({onLogin}) {
       <h2>Login</h2>
 
       <form onSubmit={handleSubmit} noValidate>
-
         <div className="form-group">
           <div>
             <label htmlFor="email">Email</label>
@@ -89,7 +82,6 @@ export default function Login({onLogin}) {
             }}
           />
         </div>
-        {/* button disable if while fetch happen */}
         <div className="error">{serverError}</div>
         <button type="submit" disabled={isLoading}>
           {isLoading ? "Login..." : "Login"}
@@ -103,12 +95,12 @@ async function loginUser(email, password) {
   const res = await fetch(`${API_URL}/users/login`, {
     method: "post",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({email, password }),
-    credentials: "include"
+    body: JSON.stringify({ email, password }),
+    credentials: "include",
   });
   const data = await res.json();
   if (res.ok) {
-    return data.user
+    return data.user;
   } else {
     throw new Error(data.message);
   }

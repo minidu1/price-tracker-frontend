@@ -20,7 +20,7 @@ export default function Dashboard({ onLogout, user }) {
   }
 
   function handleDelete() {
-    setRefreshKey((k)=> k+1)
+    setRefreshKey((k) => k + 1);
   }
 
   useEffect(() => {
@@ -65,7 +65,6 @@ export default function Dashboard({ onLogout, user }) {
 
   return (
     <>
-      {/* Always visible */}
       <p>Dashboard</p>
       <p>hello {user.name}</p>
       <button onClick={onLogout}>Logout</button>
@@ -85,7 +84,7 @@ async function fetchTrackedProducts() {
     method: "GET",
     credentials: "include",
   });
-  const data = await res.json(); //make javascript obj 
+  const data = await res.json();
   if (!res.ok) throw new Error(data.message);
 
   return data;

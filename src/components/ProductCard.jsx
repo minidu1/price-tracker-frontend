@@ -11,14 +11,13 @@ export default function ProductCard({
   id,
   onDelete,
 }) {
-  const numericPrice = parsePrice(price)
-  const numericTarget = parsePrice(target)
+  const numericPrice = parsePrice(price);
+  const numericTarget = parsePrice(target);
 
   const targetReached = numericPrice !== null && numericPrice <= numericTarget;
 
   async function deleteProduct() {
-    if (!window.confirm("Remove this product?")) return; // if user cancel, stop function
-    //else
+    if (!window.confirm("Remove this product?")) return;
     try {
       const res = await fetch(`${API_URL}/products/tracked-products/${id}`, {
         method: "DELETE",
@@ -26,16 +25,15 @@ export default function ProductCard({
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
-      onDelete(); // tell dashboard to refetch the dashboard
+      onDelete(); // refresh dashboard
     } catch (err) {
-      console.log(err);
+      console.error(err);
       alert("Couldn't delete the product, try again later");
     }
   }
 
   return (
     <div className="product-card">
-      {/* make a link to productdetails component by calling url with id   */}
       <Link to={`/products/${id}`}>
         <div className="product-picture">
           {<img src={picture} alt={name} />}
